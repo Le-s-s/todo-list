@@ -8,7 +8,7 @@ const todoStorage = (function(){
             this.items = items;
             }
     }
-    const createTodo = function(name){
+    const objectCreator = function(name){
         const key = storageKey(name);
         const exists = localStorage.getItem(key);
         let todoObj;
@@ -20,7 +20,6 @@ const todoStorage = (function(){
             const parsed = JSON.parse(exists);
             todoObj = new todoTab(parsed.name, parsed.items);
         }
-        renderTodo(todoObj)
         return todoObj;
         
     }
@@ -32,7 +31,6 @@ const todoStorage = (function(){
         const identifier = crypto.randomUUID();
         const newTodo = {title,description,dueDate,priority,identifier};
         todoObj.items.push(newTodo)
-        createItemDom(todoObj,newTodo);
         saveTodo(todoObj);
         return newTodo;
     }
@@ -41,9 +39,8 @@ const todoStorage = (function(){
             if(obj.identifier === newTodo.identifier){
                 const index = todoObj.items.indexOf(obj);
                 todoObj.items.splice(index,1);
-                deleteItemDom(obj.identifier);
                 saveTodo(todoObj);
-                break;
+                return obj.identifier;
             }
         }
         
@@ -52,7 +49,7 @@ const todoStorage = (function(){
         const key = storageKey(todoObj.name);
         localStorage.setItem(key, JSON.stringify(todoObj));
     }
-    return{newTodo,createTodo,createItemObject,deleteItemObject};
+    return{todoTab,objectCreator,createItemObject,deleteItemObject};
 })();
 
 export default todoStorage;

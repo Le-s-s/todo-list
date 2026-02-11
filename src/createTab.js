@@ -14,7 +14,6 @@ const tab = (function(){
         const nav = document.querySelector(".nav-bar");
         const newTab = nav.querySelector(".new");
         const tab = document.createElement("button");
-        const body = document.querySelector(".container")
         tab.classList.add(`${name}`)
         tab.textContent = name;
         nav.insertBefore(tab, newTab);
@@ -22,9 +21,6 @@ const tab = (function(){
         tab.addEventListener("click", (event) => { 
             todo.createTodo(name);
         });
-        
-
-        
         //todo.makeList();
         // add todo list function here, 
         // to dynamically create a new json list as well as the ability to 

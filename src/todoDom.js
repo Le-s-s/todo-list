@@ -15,11 +15,8 @@ const todoDom = (function(){
         addNew.textContent = "+";
         addNew.classList.add("add-item");
         body.appendChild(addNew);
+        return todoObj;
 
-        addNew.addEventListener("click", (event) => { 
-            const item = createItemObject(todoObj);
-            alert(item.identifier)
-        });
     }
 
     const createItemDom = function(todoObj,newTodo){
@@ -41,13 +38,12 @@ const todoDom = (function(){
         card.appendChild(notes)
         const deleteButt = document.createElement("button");
         deleteButt.textContent = `X`;
+        deleteButt.classList.add("delete-item")
         card.appendChild(deleteButt)
         card.dataset.id = newTodo.identifier;
         body.appendChild(card);
 
-        deleteButt.addEventListener("click", (event) => { 
-            deleteItemObject(todoObj,newTodo);
-        });
+        return todoObj;
     }
 
     const deleteItemDom = function(identifier){
