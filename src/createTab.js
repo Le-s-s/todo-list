@@ -3,7 +3,6 @@ import todo from "./createTodo.js";
 const tab = (function(){
     const tabMaker = function(){
         const name = tabName();
-        alert(name);
         const tab = createTab(name);
     }
     const tabName = function(){

@@ -1,4 +1,5 @@
-    
+import todoData from "./todoData.js";    
+
 const todoStorage = (function(){
     const storageKey = (name) => `todo:${name}`;
     
@@ -23,11 +24,11 @@ const todoStorage = (function(){
         return todoObj;
         
     }
-    const createItemObject = function(todoObj){
-        const title = prompt("Title");
-        const description = prompt("What do you have to do?")
-        const dueDate = prompt("When is it due?")
-        const priority = prompt("How important?")
+    const createItemObject = function(todoObj,todoForm){
+        const title = todoForm.title.value;
+        const description = todoForm.description.value;
+        const dueDate = todoForm.dueDate.value;
+        const priority = todoForm.priority.value;
         const identifier = crypto.randomUUID();
         const newTodo = {title,description,dueDate,priority,identifier};
         todoObj.items.push(newTodo)
@@ -40,7 +41,6 @@ const todoStorage = (function(){
                 const index = todoObj.items.indexOf(obj);
                 todoObj.items.splice(index,1);
                 saveTodo(todoObj);
-                return obj.identifier;
             }
         }
         
