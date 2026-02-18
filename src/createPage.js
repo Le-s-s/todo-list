@@ -7,10 +7,11 @@ const page = (function(){
         defaultTab();
     }
     const defaultTab = function(){
+        createTab.createTab("Default")
         const navBar = document.querySelector(".nav-bar");
         const newTab = document.createElement("button");
         newTab.classList.add("New")
-        newTab.textContent = "New";
+        newTab.textContent = "+";
         navBar.appendChild(newTab);
         newTab.addEventListener("click", () => {
             createTab.tabMaker();

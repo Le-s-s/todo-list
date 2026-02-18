@@ -3,7 +3,7 @@ import todo from "./createTodo.js";
 const tab = (function(){
     const tabMaker = function(){
         const name = tabName();
-        const tab = createTab(name);
+        createTab(name);
     }
     const tabName = function(){
         const name = prompt("What will you call this tab?")

@@ -21,7 +21,6 @@ const todoDom = (function(){
     }
 
     const createItemDom = function(todoObj, newTodo, onDelete, saveTodo){
-        alert(newTodo)
         const body = document.querySelector(`.container`);
         const card = document.createElement("div");
 
@@ -129,6 +128,7 @@ const todoDom = (function(){
 
         // checklist ai generated, will replace later.
         // though i had already made something similar.
+        
         // container for generated checklist inputs
         const checklistContainer = document.createElement("div");
         todoForm.appendChild(checklistContainer);

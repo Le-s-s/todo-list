@@ -1,5 +1,3 @@
-import todoData from "./todoData.js";    
-
 const todoStorage = (function(){
     const storageKey = (name) => `todo:${name}`;
     
