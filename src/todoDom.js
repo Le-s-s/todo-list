@@ -1,12 +1,13 @@
+import "./style.css";
 const todoDom = (function(){
     const renderTodo = function(todoObj, onCreate, onDelete,saveTodo){
         const body = document.querySelector(".container");
         body.innerHTML = "";
-
+        newItemButton(todoObj, onCreate);
         for (const item of todoObj.items){
             createItemDom(todoObj, item, onDelete, saveTodo);
         }
-        newItemButton(todoObj, onCreate);
+        
     }
 
     const newItemButton = function(todoObj, onCreate){
@@ -39,9 +40,6 @@ const todoDom = (function(){
         const priority = document.createElement("h1");
         card.appendChild(priority)
         priority.textContent = `${newTodo.priority}`;
-
-        const notes = document.createElement("input");
-        card.appendChild(notes)
 
         // creates list of checkable list items
         if (Array.isArray(newTodo.checklist)) {
@@ -128,7 +126,7 @@ const todoDom = (function(){
 
         // checklist ai generated, will replace later.
         // though i had already made something similar.
-        
+
         // container for generated checklist inputs
         const checklistContainer = document.createElement("div");
         todoForm.appendChild(checklistContainer);
@@ -163,8 +161,53 @@ const todoDom = (function(){
             todoForm.remove();
         });
     }
+    // page constructor
+    const pageConstructor = function(createTodo){
+        const webpage = document.querySelector(".container");
+        webpage.innerHTML= "";
+        defaultTab(createTodo);
+    }
+    
+    const defaultTab = function(createTodo){
+        createTab("Default", createTodo)
+        const navBar = document.querySelector(".nav-bar");
+        const newTab = document.createElement("button");
+        newTab.classList.add("new")
+        newTab.textContent = "+";
+        navBar.appendChild(newTab);
+        newTab.addEventListener("click", () => {
+            tabMaker(createTodo);
+        });
+    }
 
-    return{createForm,newItemButton,createItemDom,renderTodo,deleteItemDom};
+    // tab logic
+    const tabMaker = function(createTodo){
+        const name = tabName();
+        createTab(name,createTodo);
+    }
+    
+    const tabName = function(){
+        const name = prompt("What will you call this tab?")
+        return name;
+    }
+    const createTab = function(name,createTodo){
+        const nav = document.querySelector(".nav-bar");
+        const newTab = nav.querySelector(".new");
+        const tab = document.createElement("button");
+        tab.classList.add(`${name}`)
+        tab.textContent = name;
+        nav.insertBefore(tab, newTab);
+        createTodo(name);
+        tab.addEventListener("click", (event) => { 
+            return createTodo(name);
+        });
+        //todo.makeList();
+        // add todo list function here, 
+        // to dynamically create a new json list as well as the ability to 
+        // add individual notes, and all that jazz.
+    }
+
+    return{createForm,newItemButton,createItemDom,renderTodo,deleteItemDom,pageConstructor,defaultTab,tabMaker,tabName,createTab};
 })();
 
 export default todoDom;

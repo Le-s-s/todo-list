@@ -2,6 +2,9 @@ import todoStorage from "./todoStorage.js";
 import todoDom from "./todoDom.js";
 
 const todoHandler = (function(){
+    const createPage = function(){
+        todoDom.pageConstructor(createTodo)
+    }
     const createTodo = function(name){
         const todoObj = todoStorage.objectCreator(name);
         todoDom.renderTodo(todoObj,createItems,deleteItems, todoStorage.saveTodo);        
@@ -15,7 +18,7 @@ const todoHandler = (function(){
         todoStorage.deleteItemObject(todoObj,newTodo);
         todoDom.deleteItemDom(newTodo.identifier);
     }
-    return{createTodo,createItems,deleteItems}
+    return{createTodo,createItems,deleteItems,createPage}
 })();
 
 

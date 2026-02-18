@@ -6,8 +6,8 @@
 // a seperate module for date handling.
 // storage.
 
-import createPage from "./createPage.js"
+import createTodo from "./createTodo.js"
 
 addEventListener("DOMContentLoaded", (event) => { 
-    createPage.pageConstructor();
+    createTodo.createPage();
 });
