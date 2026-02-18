@@ -1,12 +1,10 @@
-import createTodo from "./createTodo.js";    
-
 const todoDom = (function(){
-    const renderTodo = function(todoObj, onCreate, onDelete){
+    const renderTodo = function(todoObj, onCreate, onDelete,saveTodo){
         const body = document.querySelector(".container");
         body.innerHTML = "";
 
         for (const item of todoObj.items){
-            createItemDom(todoObj, item, onDelete);
+            createItemDom(todoObj, item, onDelete, saveTodo);
         }
         newItemButton(todoObj, onCreate);
     }
@@ -22,29 +20,60 @@ const todoDom = (function(){
         });
     }
 
-    const createItemDom = function(todoObj,newTodo, onDelete){
+    const createItemDom = function(todoObj, newTodo, onDelete, saveTodo){
+        alert(newTodo)
         const body = document.querySelector(`.container`);
         const card = document.createElement("div");
+
         const title = document.createElement("h2");
         title.textContent = `${newTodo.title}`;
         card.appendChild(title)
+
         const description = document.createElement("p");
         card.appendChild(description)
+
         description.textContent = `${newTodo.description}`;
         const dueDate = document.createElement("h3");
         card.appendChild(dueDate)
+
         dueDate.textContent = `${newTodo.dueDate}`;
         const priority = document.createElement("h1");
         card.appendChild(priority)
         priority.textContent = `${newTodo.priority}`;
+
         const notes = document.createElement("input");
         card.appendChild(notes)
+
+        // creates list of checkable list items
+        if (Array.isArray(newTodo.checklist)) {
+            newTodo.checklist.forEach(element => {
+                const checkMark = document.createElement("input");
+                checkMark.type = "checkbox";
+                checkMark.checked = element.completed;
+
+                const checkItem = document.createElement("p");
+                checkItem.textContent = element.value;
+                checkItem.appendChild(checkMark);
+
+                card.appendChild(checkItem);
+                
+                // haven't worked with checkboxes enough to know this.
+                // thanks ai for 'change'// checkmark.checked stuff.
+                checkMark.addEventListener("change", (event) => { 
+                    element.completed = checkMark.checked;
+                    saveTodo(todoObj);
+                });
+            });
+        }
+
         const deleteButt = document.createElement("button");
         deleteButt.textContent = `X`;
         deleteButt.classList.add("delete-item")
         card.appendChild(deleteButt)
+
         card.dataset.id = newTodo.identifier;
         body.appendChild(card);
+
         deleteButt.addEventListener("click", (event) => { 
             onDelete(todoObj,newTodo);
         });
@@ -64,14 +93,17 @@ const todoDom = (function(){
         title.name = "title";
         todoForm.appendChild(title)
 
+
         const desc = document.createElement("input")
         desc.name = "description";
         todoForm.appendChild(desc)
+
 
         const dueDate = document.createElement("input")
         dueDate.name = "dueDate";
         dueDate.type = "date";
         todoForm.appendChild(dueDate);
+
 
         const options = ["Extra", "Somewhat", "Important"];
         options.forEach(option => {
@@ -96,6 +128,7 @@ const todoDom = (function(){
 
 
         // checklist ai generated, will replace later.
+        // though i had already made something similar.
         // container for generated checklist inputs
         const checklistContainer = document.createElement("div");
         todoForm.appendChild(checklistContainer);
@@ -111,13 +144,13 @@ const todoDom = (function(){
                 const checkInput = document.createElement("input");
                 checkInput.type = "text";
                 checkInput.name = "checklist";
+                checkInput.classList.add("checklist");
                 checkInput.placeholder = `Checklist item ${i + 1}`;
 
                 wrapper.appendChild(checkInput);
                 checklistContainer.appendChild(wrapper);
             }
         });
-
 
         const confirm = document.createElement("button")
         confirm.type = "button"

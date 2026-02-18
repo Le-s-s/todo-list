@@ -25,13 +25,34 @@ const todoStorage = (function(){
         
     }
     const createItemObject = function(todoObj,todoForm){
+
         const title = todoForm.title.value;
+
         const description = todoForm.description.value;
+
         const dueDate = todoForm.dueDate.value;
+
         const priority = todoForm.priority.value;
+
         const identifier = crypto.randomUUID();
-        const newTodo = {title,description,dueDate,priority,identifier};
+
+        const checklistDom = todoForm.querySelectorAll(".checklist")
+
+        // ai, will make my own later.
+        // converts checklist dom into array object
+        const checklist = Array.from(checklistDom)
+        .map(node => node.value.trim())
+        .filter(value => value !== "")
+        .map(value => ({
+            value,
+            completed: false
+        }));
+
+
+        const newTodo = {title,description,dueDate,priority,identifier,checklist};
+
         todoObj.items.push(newTodo)
+        
         saveTodo(todoObj);
         return newTodo;
     }
@@ -49,7 +70,7 @@ const todoStorage = (function(){
         const key = storageKey(todoObj.name);
         localStorage.setItem(key, JSON.stringify(todoObj));
     }
-    return{todoTab,objectCreator,createItemObject,deleteItemObject};
+    return{todoTab,objectCreator,createItemObject,deleteItemObject,saveTodo};
 })();
 
 export default todoStorage;
