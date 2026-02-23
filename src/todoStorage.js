@@ -1,6 +1,9 @@
 const todoStorage = (function(){
     const storageKey = (name) => `todo:${name}`;
-    
+    const tabs = {
+    active: null,
+    lists: []
+};
     class todoTab {
         constructor(name, items = []){
             this.name = name;
@@ -65,10 +68,53 @@ const todoStorage = (function(){
         
     }
     const saveTodo = function(todoObj){
+        tabHandler(todoObj);
         const key = storageKey(todoObj.name);
         localStorage.setItem(key, JSON.stringify(todoObj));
     }
-    return{todoTab,objectCreator,createItemObject,deleteItemObject,saveTodo};
+
+
+        
+        // plan
+        // when a todoobj is saved
+        // put it in an array of tabs
+        // auto load all in tabs when site loads.
+    const tabHandler = function(todoObj){
+
+        const index = tabs.lists.findIndex(
+            obj => obj.name === todoObj.name
+        );
+
+        if (index !== -1){
+            tabs.lists[index] = todoObj;
+        } else {
+            tabs.lists.push(todoObj);
+        }
+
+        return todoObj;
+    };
+
+    const loadTabs = function(){
+        tabs.length = 0;
+
+        Object.keys(localStorage).forEach(key => {
+            if(key.startsWith("todo:")){
+                const parsed = JSON.parse(localStorage.getItem(key));
+                tabs.lists.push(new todoTab(parsed.name, parsed.items));
+            }
+        });
+    };
+
+    return {
+    todoTab,
+    objectCreator,
+    createItemObject,
+    deleteItemObject,
+    saveTodo,
+    tabHandler,
+    loadTabs,
+    tabs
+};
 })();
 
 export default todoStorage;

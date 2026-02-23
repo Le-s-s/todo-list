@@ -1,7 +1,7 @@
 import "./style.css";
 const todoDom = (function(){
+    const body = document.querySelector(".container");
     const renderTodo = function(todoObj, onCreate, onDelete,saveTodo){
-        const body = document.querySelector(".container");
         body.innerHTML = "";
         newItemButton(todoObj, onCreate);
         for (const item of todoObj.items){
@@ -11,7 +11,6 @@ const todoDom = (function(){
     }
 
     const newItemButton = function(todoObj, onCreate){
-        const body = document.querySelector(`.container`);
         const addNew = document.createElement("button");
         addNew.textContent = "+";
         addNew.classList.add("add-item");
@@ -22,7 +21,6 @@ const todoDom = (function(){
     }
 
     const createItemDom = function(todoObj, newTodo, onDelete, saveTodo){
-        const body = document.querySelector(`.container`);
         const card = document.createElement("div");
 
         const title = document.createElement("h2");
@@ -83,7 +81,6 @@ const todoDom = (function(){
     }
 
     const createForm = function(todoObj, onCreate){
-        const body = document.querySelector(".container");
         const todoForm = document.createElement("form")
 
         const title = document.createElement("input")
@@ -162,36 +159,55 @@ const todoDom = (function(){
         });
     }
     // page constructor
-    const pageConstructor = function(createTodo){
+    const pageConstructor = function(createTodo, name){
         const webpage = document.querySelector(".container");
-        webpage.innerHTML= "";
-        defaultTab(createTodo);
-    }
-    
-    const defaultTab = function(createTodo){
-        createTab("Default", createTodo)
-        const navBar = document.querySelector(".nav-bar");
-        const newTab = document.createElement("button");
-        newTab.classList.add("new")
-        newTab.textContent = "+";
-        navBar.appendChild(newTab);
-        newTab.addEventListener("click", () => {
-            tabMaker(createTodo);
-        });
-    }
+        
+        if(name !== null){
+            createTab(name, createTodo);
+        }
 
+    }
+   
     // tab logic
-    const tabMaker = function(createTodo){
-        const name = tabName();
+    const tabMaker = function(createTodo,tabs){
+        const name = tabName(tabs);
         createTab(name,createTodo);
     }
     
-    const tabName = function(){
-        const name = prompt("What will you call this tab?")
+    const tabName = function(tabs){
+
+        let name;
+
+        while (true) {
+            name = prompt("What will you call this tab?");
+
+            if (!name) return null; // cancel pressed
+
+            name = name.trim();
+
+            const exists = tabs.some(
+                tab => tab.name === name
+            );
+
+            if (!exists) break;
+
+            alert("A tab with that name already exists.");
+        }
+
         return name;
-    }
-    const createTab = function(name,createTodo){
+    };
+
+    const createTab = function(name,createTodo,tabs){
         const nav = document.querySelector(".nav-bar");
+        if(name === "Default"){
+            const newTab = document.createElement("button");
+            newTab.classList.add("new")
+            newTab.textContent = "+";
+            nav.appendChild(newTab);
+            newTab.addEventListener("click", () => {
+                tabMaker(createTodo,tabs);
+            });
+        }
         const newTab = nav.querySelector(".new");
         const tab = document.createElement("button");
         tab.classList.add(`${name}`)
@@ -207,7 +223,7 @@ const todoDom = (function(){
         // add individual notes, and all that jazz.
     }
 
-    return{createForm,newItemButton,createItemDom,renderTodo,deleteItemDom,pageConstructor,defaultTab,tabMaker,tabName,createTab};
+    return{createForm,newItemButton,createItemDom,renderTodo,deleteItemDom,pageConstructor,tabMaker,tabName,createTab};
 })();
 
 export default todoDom;
