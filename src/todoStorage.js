@@ -1,9 +1,6 @@
 const todoStorage = (function(){
     const storageKey = (name) => `todo:${name}`;
-    const tabs = {
-    active: null,
-    lists: []
-};
+    const tabs = {active: null, lists: []};
     class todoTab {
         constructor(name, items = []){
             this.name = name;
@@ -19,12 +16,35 @@ const todoStorage = (function(){
             todoObj = new todoTab(name, []);
             localStorage.setItem(key, JSON.stringify(todoObj));
         } else {
-            const parsed = JSON.parse(exists);
-            todoObj = new todoTab(parsed.name, parsed.items);
+            todoObj = objectLoader(name);
         }
         return todoObj;
+    }
+
+    const objectLoader = function(name)
+    {
+        const key = storageKey(name);
+        const exists = localStorage.getItem(key);
+        let todoObj = null;
+
+        if(exists !== null) {
+            const parsed = JSON.parse(exists);
+            todoObj = new todoTab(parsed.name, parsed.items);
+            
+        }
+
+        return todoObj;
+
         
     }
+    const objectRemover = function(name){
+        const key = storageKey(name);
+        alert(key)
+        localStorage.removeItem(key);
+        alert(localStorage.getItem(key));
+
+    };
+
     const createItemObject = function(todoObj,todoForm){
 
         const title = todoForm.title.value;
@@ -90,31 +110,30 @@ const todoStorage = (function(){
         } else {
             tabs.lists.push(todoObj);
         }
-
         return todoObj;
     };
 
     const loadTabs = function(){
-        tabs.length = 0;
+        tabs.lists.length = 0;
 
         Object.keys(localStorage).forEach(key => {
+            
             if(key.startsWith("todo:")){
+                alert(key)
                 const parsed = JSON.parse(localStorage.getItem(key));
                 tabs.lists.push(new todoTab(parsed.name, parsed.items));
             }
         });
     };
 
-    return {
-    todoTab,
-    objectCreator,
-    createItemObject,
-    deleteItemObject,
-    saveTodo,
-    tabHandler,
-    loadTabs,
-    tabs
-};
+    const deleteTabs = function(name){
+                // remove from runtime state
+        tabs.lists = tabs.lists.filter(
+            obj => obj.name !== name
+        );
+    }
+
+    return {todoTab,objectCreator,objectLoader,objectRemover,createItemObject,deleteItemObject,saveTodo,tabHandler,loadTabs,tabs, deleteTabs};
 })();
 
 export default todoStorage;

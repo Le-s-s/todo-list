@@ -2,6 +2,10 @@ import "./style.css";
 const todoDom = (function(){
     const body = document.querySelector(".container");
     const renderTodo = function(todoObj, onCreate, onDelete,saveTodo){
+        if(todoObj === null){
+            body.innerHTML = "";
+            newItemButton(todoObj, onCreate);          
+        }
         body.innerHTML = "";
         newItemButton(todoObj, onCreate);
         for (const item of todoObj.items){
@@ -158,20 +162,12 @@ const todoDom = (function(){
             todoForm.remove();
         });
     }
-    // page constructor
-    const pageConstructor = function(createTodo, name){
-        const webpage = document.querySelector(".container");
-        
-        if(name !== null){
-            createTab(name, createTodo);
-        }
 
-    }
    
     // tab logic
-    const tabMaker = function(createTodo,tabs){
+    const tabMaker = function(createTodo,tabs,deleteTodo){
         const name = tabName(tabs);
-        createTab(name,createTodo);
+        createTab(name,createTodo,tabs,deleteTodo);
     }
     
     const tabName = function(tabs){
@@ -197,7 +193,8 @@ const todoDom = (function(){
         return name;
     };
 
-    const createTab = function(name,createTodo,tabs){
+    const createTab = function(name,createTodo,tabs, deleteTodo){
+        if(name === null) return;
         const nav = document.querySelector(".nav-bar");
         if(name === "Default"){
             const newTab = document.createElement("button");
@@ -205,25 +202,32 @@ const todoDom = (function(){
             newTab.textContent = "+";
             nav.appendChild(newTab);
             newTab.addEventListener("click", () => {
-                tabMaker(createTodo,tabs);
+                tabMaker(createTodo,tabs,deleteTodo);
             });
         }
         const newTab = nav.querySelector(".new");
+        const del = document.createElement("button");
+        del.classList.add(`delTab`)
+        del.textContent = "x";
+
         const tab = document.createElement("button");
         tab.classList.add(`${name}`)
         tab.textContent = name;
+        tab.appendChild(del)
+
         nav.insertBefore(tab, newTab);
-        createTodo(name);
-        tab.addEventListener("click", (event) => { 
-            return createTodo(name);
+
+        del.addEventListener("click", (event) => { 
+            tab.remove()
+            deleteTodo(name);
         });
-        //todo.makeList();
-        // add todo list function here, 
-        // to dynamically create a new json list as well as the ability to 
-        // add individual notes, and all that jazz.
+
+        tab.addEventListener("click", (event) => { 
+            createTodo(name);
+        });
     }
 
-    return{createForm,newItemButton,createItemDom,renderTodo,deleteItemDom,pageConstructor,tabMaker,tabName,createTab};
+    return{createForm,newItemButton,createItemDom,renderTodo,deleteItemDom,tabMaker,tabName,createTab};
 })();
 
 export default todoDom;
