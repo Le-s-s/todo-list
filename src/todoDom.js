@@ -69,7 +69,7 @@ const todoDom = (function(){
         deleteButt.textContent = `X`;
         deleteButt.classList.add("delete-item")
         card.appendChild(deleteButt)
-
+        card.classList.add("card")
         card.dataset.id = newTodo.identifier;
         body.appendChild(card);
 
@@ -152,6 +152,7 @@ const todoDom = (function(){
         });
 
         const confirm = document.createElement("button")
+        confirm.textContent = "Submit"
         confirm.type = "button"
         todoForm.appendChild(confirm);
 
@@ -165,35 +166,40 @@ const todoDom = (function(){
 
    
     // tab logic
-    const tabMaker = function(createTodo,tabs,deleteTodo){
-        const name = tabName(tabs);
-        createTab(name,createTodo,tabs,deleteTodo);
+    const tabMaker = function(createTodo,deleteTodo){
+        const name = tabName();
+        createTab(name,createTodo,deleteTodo);
     }
     
-    const tabName = function(tabs){
+    const tabName = function(){
 
         let name;
 
         while (true) {
             name = prompt("What will you call this tab?");
-
+            const tabs = [];
             if (!name) return null; // cancel pressed
 
             name = name.trim();
-
+            Object.keys(localStorage).forEach(key => {
+                tabs.push(key)
+            });
             const exists = tabs.some(
-                tab => tab.name === name
+                tab => tab.name === `todo:${name}`
             );
+            alert(tabs)
 
             if (!exists) break;
 
-            alert("A tab with that name already exists.");
+
+
+            
         }
 
         return name;
     };
 
-    const createTab = function(name,createTodo,tabs, deleteTodo){
+    const createTab = function(name,createTodo, deleteTodo){
         if(name === null) return;
         const nav = document.querySelector(".nav-bar");
         if(name === "Default"){
@@ -202,7 +208,7 @@ const todoDom = (function(){
             newTab.textContent = "+";
             nav.appendChild(newTab);
             newTab.addEventListener("click", () => {
-                tabMaker(createTodo,tabs,deleteTodo);
+                tabMaker(createTodo,deleteTodo);
             });
         }
         const newTab = nav.querySelector(".new");
@@ -211,6 +217,7 @@ const todoDom = (function(){
         del.textContent = "x";
 
         const tab = document.createElement("button");
+        tab.classList.add("tab")
         tab.classList.add(`${name}`)
         tab.textContent = name;
         tab.appendChild(del)

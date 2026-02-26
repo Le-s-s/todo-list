@@ -3,26 +3,31 @@ import todoDom from "./todoDom.js";
 
 //localStorage.clear()
 const todoHandler = (function(){
-    const tabs = todoStorage.tabs.lists;
-    const createPage = function(){
-        todoStorage.loadTabs();
-        
+    const createPage = function() {
 
-        if (tabs.length === 0){
-            createTodo("Default"); // ONLY here
-            todoDom.createTab("Default", createTodo, tabs, deleteTodo);
-            
-        } else {  
-            currentTabs();
-            createTodo(tabs[0].name);
+        const todoKeys = Object.keys(localStorage)
+            .filter(key => key.startsWith("todo:"));
+
+        if (todoKeys.length === 0) {
+            createTodo("Default");
+            todoDom.createTab("Default", createTodo, deleteTodo);
+            return;
         }
+        const tabNames = [];
+
+        todoKeys.forEach(key => {
+            const data = JSON.parse(localStorage.getItem(key));
+
+            // ensure it's actually a todo tab
+            if (data && data.name) {
+                tabNames.push(data.name);
+                todoDom.createTab(data.name, createTodo, deleteTodo);
+            }
+        });
+
+        // render first tab once
+        createTodo(tabNames[0]);
     };
-
-    const currentTabs = function(){
-        for(const obj of tabs){
-            todoDom.createTab(obj.name, createTodo,tabs,deleteTodo);
-        }
-    }
 
     const createTodo = function(name){
         // Try to load first
@@ -46,8 +51,7 @@ const todoHandler = (function(){
 
     const deleteTodo = function(name){
         todoStorage.objectRemover(name);
-        todoStorage.deleteTabs(name)
-        //todoDom.renderTodo(todoObj,createItems,deleteItems, todoStorage.saveTodo);        
+             
     }
 
     const deleteItems = function(todoObj,newTodo){
