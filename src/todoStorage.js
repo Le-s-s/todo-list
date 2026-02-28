@@ -1,27 +1,30 @@
 const todoStorage = (function(){
+
     const storageKey = (name) => `todo:${name}`;
     class todoTab {
         constructor(name, items = []){
             this.name = name;
             this.items = items;
-            this.deleted = false;
             }
     }
 
     // object manipulation and storage
 
-    const objectCreator = function(name){
-        const key = storageKey(name);
-        
-        const exists = localStorage.getItem(key);
-        let todoObj;
-        
-        if(exists === null){
-            todoObj = new todoTab(name, []);
-            localStorage.setItem(key, JSON.stringify(todoObj));
-        } else {
-            todoObj = objectLoader(name);
+    const objectHandler = function(name){
+        let todoObj = objectLoader(name);
+
+        if(todoObj === null){
+            todoObj = objectCreator(name);
         }
+
+        localStorage.setItem("activeTab", name);
+        saveTodo(todoObj);
+        return todoObj
+    }
+    
+    const objectCreator = function(name){
+        let todoObj;
+        todoObj = new todoTab(name, []);
         return todoObj;
     }
 
@@ -37,13 +40,13 @@ const todoStorage = (function(){
             
             
         }
-        alert(todoObj)
+        
         return todoObj;
 
         
     }
-    const objectRemover = function(name){
-        alert(name)
+
+    const objectRemover = function(name){    
         const key = storageKey(name);
         localStorage.removeItem(key);
     };
@@ -80,6 +83,7 @@ const todoStorage = (function(){
         saveTodo(todoObj);
         return newTodo;
     }
+
     const deleteItemObject = function(todoObj, newTodo) {
         for(const obj of todoObj.items){
             if(obj.identifier === newTodo.identifier){
@@ -90,12 +94,13 @@ const todoStorage = (function(){
         }
         
     }
+
     const saveTodo = function(todoObj){
         const key = storageKey(todoObj.name);
         localStorage.setItem(key, JSON.stringify(todoObj));
     }
 
-    return {todoTab,objectCreator,objectLoader,objectRemover,createItemObject,deleteItemObject,saveTodo};
+    return {todoTab,objectHandler,objectCreator,objectLoader,objectRemover,createItemObject,deleteItemObject,saveTodo};
 })();
 
 export default todoStorage;

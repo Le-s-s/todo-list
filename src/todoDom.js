@@ -79,7 +79,6 @@ const todoDom = (function(){
     }
 
     const deleteItemDom = function(identifier){
-        alert(identifier);
         const del = document.querySelector(`.container [data-id="${identifier}"]`)
         if (del) del.remove();
     }
@@ -133,7 +132,7 @@ const todoDom = (function(){
         todoForm.appendChild(checklistContainer);
 
         checkNum.addEventListener("input", () => {
-            checklistContainer.innerHTML = ""; // clear previous inputs
+            checklistContainer.innerHTML = "";
 
             const count = parseInt(checkNum.value) || 0;
 
@@ -178,7 +177,7 @@ const todoDom = (function(){
         while (true) {
             name = prompt("What will you call this tab?");
             const tabs = [];
-            if (!name) return null; // cancel pressed
+            if (!name) return null;
 
             name = name.trim();
             Object.keys(localStorage).forEach(key => {
@@ -187,7 +186,6 @@ const todoDom = (function(){
             const exists = tabs.some(
                 tab => tab.name === `todo:${name}`
             );
-            alert(tabs)
 
             if (!exists) break;
 
@@ -225,6 +223,7 @@ const todoDom = (function(){
         nav.insertBefore(tab, newTab);
 
         del.addEventListener("click", (event) => { 
+            event.stopPropagation()
             tab.remove()
             deleteTodo(name);
         });

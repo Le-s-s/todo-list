@@ -3,11 +3,18 @@ import todoDom from "./todoDom.js";
 
 //localStorage.clear()
 const todoHandler = (function(){
+    // tab variable should be moved 
+    // but will it?
+    // probably not.
+    let currentTab
+    
+    // populates page with data
+    // or creates default tab
     const createPage = function() {
-
+        currentTab = localStorage.getItem("activeTab");
         const todoKeys = Object.keys(localStorage)
             .filter(key => key.startsWith("todo:"));
-
+        
         if (todoKeys.length === 0) {
             createTodo("Default");
             todoDom.createTab("Default", createTodo, deleteTodo);
@@ -18,33 +25,24 @@ const todoHandler = (function(){
         todoKeys.forEach(key => {
             const data = JSON.parse(localStorage.getItem(key));
 
-            // ensure it's actually a todo tab
+            
             if (data && data.name) {
                 tabNames.push(data.name);
                 todoDom.createTab(data.name, createTodo, deleteTodo);
             }
         });
 
-        // render first tab once
-        createTodo(tabNames[0]);
+        currentTab = currentTab || tabNames[0];
+        createTodo(currentTab);
     };
 
     const createTodo = function(name){
-        // Try to load first
-        let todoObj = todoStorage.objectLoader(name);
-        alert(todoObj)
-
-        // If not found, create it
-        if(todoObj === null){
-            todoObj = todoStorage.objectCreator(name);
-        }
-
-        // Now render
+        currentTab = name;
+        let todoObj = todoStorage.objectHandler(name);
         todoDom.renderTodo(todoObj, createItems, deleteItems, todoStorage.saveTodo);
     };
     
     const createItems = function(todoObj,todoForm){
-        alert(todoForm.description.value)
         const newTodo = todoStorage.createItemObject(todoObj,todoForm)
         todoDom.createItemDom(todoObj, newTodo, deleteItems, todoStorage.saveTodo);
     }
@@ -62,10 +60,10 @@ const todoHandler = (function(){
 })();
 
 //todo
-// convert tabs to localstorage to avoid brain cancer
-// make tab deletion actually delete localstorage.
-// add active tab handling
-// add styling(basic)
+// simplify code/ replace ai code(not much)
+// add proper comments.
+// add more styling
+// add safeguards
 
 
 export default todoHandler;
