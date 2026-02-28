@@ -1,0 +1,1 @@
+import createTodo from"./createTodo.js";addEventListener("DOMContentLoaded",e=>{createTodo.createPage()});
