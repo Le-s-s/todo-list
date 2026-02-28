@@ -31,6 +31,10 @@ const todoDom = (function(){
         title.textContent = `${newTodo.title}`;
         card.appendChild(title)
 
+        const details = document.createElement("div");
+        details.classList.add("card-details");
+        card.appendChild(details);
+
         const description = document.createElement("p");
         card.appendChild(description)
 
@@ -55,6 +59,7 @@ const todoDom = (function(){
                 checkItem.appendChild(checkMark);
 
                 card.appendChild(checkItem);
+                details.appendChild(checkItem);
                 
                 // haven't worked with checkboxes enough to know this.
                 // thanks ai for 'change'// checkmark.checked stuff.
@@ -72,6 +77,14 @@ const todoDom = (function(){
         card.classList.add("card")
         card.dataset.id = newTodo.identifier;
         body.appendChild(card);
+        details.appendChild(description);
+        details.appendChild(dueDate);
+        details.appendChild(priority);
+        details.appendChild(deleteButt);
+
+        title.addEventListener("click", () => {
+            card.classList.toggle("expanded");
+        });
 
         deleteButt.addEventListener("click", (event) => { 
             onDelete(todoObj,newTodo);

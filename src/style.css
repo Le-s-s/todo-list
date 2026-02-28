@@ -61,15 +61,29 @@ body {
     flex-direction: column;
 }
 
-.tab {
-
-}
 
 .card {
     justify-items: center;
     align-items: center;
     font-size: 80%;
-    height: 80%;
     background-color: white;
+    height: 10%;
+    
+}
+
+.card.expanded{
+    height: 100%;
+}
+
+.card-details {
+    display: none;
+    background-color: grey;
+    height: 90%;
+    width: 100%;
+}
+
+.card.expanded .card-details {
+    
+    display: block;
     overflow-y:auto
 }
