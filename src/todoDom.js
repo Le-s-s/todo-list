@@ -1,3 +1,4 @@
+import { format, addDays, formatDate } from 'date-fns';
 import "./style.css";
 const todoDom = (function(){
     const body = document.querySelector(".container");
@@ -26,7 +27,7 @@ const todoDom = (function(){
 
     const createItemDom = function(todoObj, newTodo, onDelete, saveTodo){
         const card = document.createElement("div");
-
+        card.classList.add(`${newTodo.priority}`);
         const title = document.createElement("h2");
         title.textContent = `${newTodo.title}`;
         card.appendChild(title)
@@ -46,6 +47,7 @@ const todoDom = (function(){
         const priority = document.createElement("h1");
         card.appendChild(priority)
         priority.textContent = `${newTodo.priority}`;
+        
 
         // creates list of checkable list items
         if (Array.isArray(newTodo.checklist)) {
@@ -61,8 +63,6 @@ const todoDom = (function(){
                 card.appendChild(checkItem);
                 details.appendChild(checkItem);
                 
-                // haven't worked with checkboxes enough to know this.
-                // thanks ai for 'change'// checkmark.checked stuff.
                 checkMark.addEventListener("change", (event) => { 
                     element.completed = checkMark.checked;
                     saveTodo(todoObj);
@@ -101,48 +101,83 @@ const todoDom = (function(){
 
         const title = document.createElement("input")
         title.name = "title";
+        title.setAttribute("placeholder", "Enter title.")
+        title.defaultValue = "Todo"
         todoForm.appendChild(title)
 
 
         const desc = document.createElement("input")
         desc.name = "description";
+        desc.defaultValue = "Things to do"
+        desc.setAttribute("placeholder", "Enter description.")
         todoForm.appendChild(desc)
 
 
         const dueDate = document.createElement("input")
         dueDate.name = "dueDate";
         dueDate.type = "date";
+        
+        const today = new Date();
+        const tomorrow = addDays(today, 1);
+        const formatted = formatDate(tomorrow, "yyyy-MM-dd");
+
+        dueDate.defaultValue = formatted
+        dueDate.setAttribute("placeholder", "Enter title.")
         todoForm.appendChild(dueDate);
 
+        const prioritySection = document.createElement("div")
+        prioritySection.classList.add("priority-section")
 
-        const options = ["Extra", "Somewhat", "Important"];
+        const priorityHeader = document.createElement("h3")
+        priorityHeader.textContent = "How important is this task?"
+        prioritySection.appendChild(priorityHeader);
+
+        const priorityOptions = document.createElement("div")
+        priorityOptions.classList.add("prority-radio")
+
+        const options = ["Important", "Somewhat", "Not"];
         options.forEach(option => {
             const priority = document.createElement("input")
             priority.name = "priority";
             priority.type = "radio"
             priority.value = option;
             priority.id =`radio-${option}`;
+            priority.class = `priority${option}`
+            priority.checked = true
+            priority.required = true;
 
             const label = document.createElement("label");
             label.htmlFor = priority.id;
             label.textContent = option;
 
-            todoForm.appendChild(priority);
-            todoForm.appendChild(label);
+            priorityOptions.appendChild(label);
+            priorityOptions.appendChild(priority);
         })
 
+        prioritySection.appendChild(priorityOptions)
+
+        todoForm.appendChild(prioritySection)
+
+        const checklistSelector = document.createElement("div")
+        checklistSelector.classList.add("checklist-selector")
+
         const checkNum = document.createElement("input");
-        checkNum.type = "number";
+        checkNum.type = "range";
         checkNum.min = "0";
-        todoForm.appendChild(checkNum);
+        checkNum.max = "10"
+        checkNum.value = "0"
+        checkNum.id = "number-range"
 
+        const checklistHeader = document.createElement("h4");
+        checklistHeader.textContent = `Checklist slider.`;
+        checklistSelector.appendChild(checklistHeader);
+        checklistSelector.appendChild(checkNum);
 
-        // checklist ai generated, will replace later.
-        // though i had already made something similar.
+        todoForm.appendChild(checklistSelector)
 
         // container for generated checklist inputs
         const checklistContainer = document.createElement("div");
-        todoForm.appendChild(checklistContainer);
+        checklistSelector.appendChild(checklistContainer);
 
         checkNum.addEventListener("input", () => {
             checklistContainer.innerHTML = "";
@@ -193,14 +228,20 @@ const todoDom = (function(){
             if (!name) return null;
 
             name = name.trim();
+
             Object.keys(localStorage).forEach(key => {
                 tabs.push(key)
             });
             const exists = tabs.some(
-                tab => tab.name === `todo:${name}`
+                tab => tab === `todo:${name}`
             );
 
-            if (!exists) break;
+            if (!exists){
+                
+                break
+            } else {
+                alert("This tab exists")
+            };
 
 
 

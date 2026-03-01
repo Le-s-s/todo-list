@@ -52,7 +52,7 @@ const todoStorage = (function(){
     };
 
 
-    // todo object handling, works as intended
+    // todo object handling
     const createItemObject = function(todoObj,todoForm){
 
         const title = todoForm.title.value;

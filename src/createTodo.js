@@ -60,10 +60,10 @@ const todoHandler = (function(){
 })();
 
 //todo
-// simplify code/ replace ai code(not much)
+// simplify code
 // add proper comments.
 // add more styling
-// add safeguards
+// add more safeguards
 
 
 export default todoHandler;
